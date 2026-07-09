@@ -1,0 +1,27 @@
+# macOS
+.DS_Store
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Vendor HyperFrames skills — pinned by skills-lock.json (tracked), reinstall with:
+#   npx skills add heygen-com/hyperframes
+# The .claude/skills entries for them are symlinks the installer recreates;
+# only the project-local hf-* skills are ours to track.
+.agents/skills/
+.claude/skills/*
+!.claude/skills/hf-*
+
+# Rendered video output — reproducible from composition source (npm run render),
+# grows a new -vN file per take; keep renders local, publish via releases if needed
+*.mp4
+*.webm
+*.mov
+renders/
+
+# hf-render-pack portrait swap safety copy (should never persist, but never track it)
+index-landscape.bak.html
+
+# Local Claude Code session permissions
+.claude/settings.local.json

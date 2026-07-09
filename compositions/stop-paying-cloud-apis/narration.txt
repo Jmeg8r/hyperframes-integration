@@ -1,0 +1,11 @@
+Cloud LLM bills. Two hundred to five hundred dollars a month. Forever.
+
+Here's the pivot. One Mac Studio. Two hundred fifty-six gigabytes of unified memory.
+
+Five models, running at once. Qwen, Coder, DeepSeek, and an embedder. One hundred seven gigabytes used. One hundred forty-nine still free.
+
+The trick is one environment variable. Point your existing SDK at localhost, and your code just works.
+
+Break even in about twelve months. After that, you're paying for electricity.
+
+The full walkthrough is at As The Geek Learns.

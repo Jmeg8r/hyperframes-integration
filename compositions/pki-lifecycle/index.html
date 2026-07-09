@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: radial-gradient(ellipse at center, #102a43 0%, #0a1626 70%, #050b14 100%);
+        font-family: "Inter", sans-serif;
+        color: #f1faee;
+      }
+
+      .stage {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .title {
+        position: absolute;
+        top: 6%;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 88px;
+        font-weight: 700;
+        letter-spacing: -1.5px;
+        color: #f1faee;
+      }
+
+      .subtitle {
+        position: absolute;
+        top: calc(6% + 110px);
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 30px;
+        font-weight: 400;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: #94d2bd;
+      }
+
+      /* Diagram container — scaled to 0.7 in landscape so top labels (label-1, label-7)
+         clear the title area without rewriting the polar coordinate layout. */
+      .diagram {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 720px;
+        height: 720px;
+        margin-left: -360px;
+        margin-top: -360px;
+        transform: scale(0.7);
+        transform-origin: center center;
+      }
+
+      .ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 2px dashed rgba(0, 180, 216, 0.35);
+      }
+
+      .hub {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 180px;
+        height: 180px;
+        margin-left: -90px;
+        margin-top: -90px;
+        border-radius: 50%;
+        background: radial-gradient(circle, #00b4d8 0%, #0077b6 80%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        box-shadow:
+          0 0 60px rgba(0, 180, 216, 0.5),
+          inset 0 0 40px rgba(255, 255, 255, 0.15);
+      }
+      .hub-label {
+        font-size: 42px;
+        font-weight: 800;
+        letter-spacing: 2px;
+        color: #f1faee;
+      }
+      .hub-sub {
+        font-size: 14px;
+        font-weight: 500;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: rgba(241, 250, 238, 0.7);
+        margin-top: 4px;
+      }
+
+      /* Phase nodes — 100x100, positioned so center sits at the polar offset.
+         Radius 320 from diagram center. 7 phases × ~51.4° each, starting at top. */
+      .node {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        margin-left: -50px;
+        margin-top: -50px;
+        border-radius: 50%;
+        background: #1d3557;
+        border: 3px solid #00b4d8;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 38px;
+        font-weight: 700;
+        color: #f1faee;
+        box-shadow: 0 0 24px rgba(0, 180, 216, 0.4);
+      }
+
+      #node-1 { left: 50%;                top: calc(50% - 320px); }
+      #node-2 { left: calc(50% + 250px); top: calc(50% - 200px); }
+      #node-3 { left: calc(50% + 312px); top: calc(50% + 71px);  }
+      #node-4 { left: calc(50% + 141px); top: calc(50% + 288px); }
+      #node-5 { left: calc(50% - 141px); top: calc(50% + 288px); }
+      #node-6 { left: calc(50% - 312px); top: calc(50% + 71px);  }
+      #node-7 { left: calc(50% - 250px); top: calc(50% - 200px); }
+
+      /* Labels — fixed width, positioned with left/top so GSAP can own transform. */
+      .label {
+        position: absolute;
+        width: 280px;
+        font-size: 24px;
+        font-weight: 600;
+        color: #f1faee;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8);
+      }
+      .label-sub {
+        display: block;
+        font-size: 16px;
+        font-weight: 400;
+        color: #94d2bd;
+        margin-top: 4px;
+      }
+
+      #label-1 { left: calc(50% - 140px); top: calc(50% - 440px); text-align: center; }
+      #label-2 { left: calc(50% + 280px); top: calc(50% - 270px); text-align: left;   }
+      #label-3 { left: calc(50% + 360px); top: calc(50% + 30px);  text-align: left;   }
+      #label-4 { left: calc(50% + 170px); top: calc(50% + 350px); text-align: left;   }
+      #label-5 { left: calc(50% - 450px); top: calc(50% + 350px); text-align: right;  }
+      #label-6 { left: calc(50% - 640px); top: calc(50% + 30px);  text-align: right;  }
+      #label-7 { left: calc(50% - 560px); top: calc(50% - 270px); text-align: right;  }
+
+      /* Revocation badge — off to the side, off the lower-left of the ring */
+      .revocation {
+        position: absolute;
+        left: calc(50% - 600px);
+        top: calc(50% + 150px);
+        width: 240px;
+        padding: 18px 22px;
+        background: rgba(230, 57, 70, 0.15);
+        border: 2px solid #e63946;
+        border-radius: 12px;
+        color: #f1faee;
+        text-align: center;
+        box-shadow: 0 0 30px rgba(230, 57, 70, 0.3);
+      }
+      .revocation-title {
+        font-size: 22px;
+        font-weight: 700;
+        color: #e63946;
+        letter-spacing: 1px;
+      }
+      .revocation-sub {
+        font-size: 14px;
+        font-weight: 400;
+        color: rgba(241, 250, 238, 0.85);
+        margin-top: 6px;
+      }
+
+      /* Outro */
+      .outro {
+        position: absolute;
+        bottom: 6%;
+        left: 0;
+        right: 0;
+        text-align: center;
+      }
+      .outro-title {
+        font-size: 40px;
+        font-weight: 700;
+        color: #f1faee;
+        letter-spacing: -0.5px;
+      }
+      .outro-sub {
+        font-size: 22px;
+        font-weight: 400;
+        color: #94d2bd;
+        margin-top: 8px;
+        letter-spacing: 1px;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="48"
+      data-width="1920"
+      data-height="1080"
+    >
+      <audio id="narration" class="clip" data-start="0" data-duration="46.56" data-track-index="5" src="narration.wav" data-volume="1.0"></audio>
+
+      <div class="stage">
+        <h1 id="title" class="clip title" data-start="0" data-duration="48" data-track-index="1">
+          PKI Certificate Lifecycle
+        </h1>
+        <div id="subtitle" class="clip subtitle" data-start="0" data-duration="48" data-track-index="2">
+          As The Geek Learns
+        </div>
+
+        <div id="diagram" class="clip diagram" data-start="2" data-duration="46" data-track-index="3">
+          <div id="ring" class="ring"></div>
+
+          <div id="hub" class="hub">
+            <div class="hub-label">PKI</div>
+            <div class="hub-sub">Trust Chain</div>
+          </div>
+
+          <div id="node-1" class="node">1</div>
+          <div id="node-2" class="node">2</div>
+          <div id="node-3" class="node">3</div>
+          <div id="node-4" class="node">4</div>
+          <div id="node-5" class="node">5</div>
+          <div id="node-6" class="node">6</div>
+          <div id="node-7" class="node">7</div>
+
+          <div id="label-1" class="label">
+            Key Generation
+            <span class="label-sub">Entity creates keypair</span>
+          </div>
+          <div id="label-2" class="label">
+            CSR Submission
+            <span class="label-sub">Request sent to CA</span>
+          </div>
+          <div id="label-3" class="label">
+            Validation
+            <span class="label-sub">CA verifies identity</span>
+          </div>
+          <div id="label-4" class="label">
+            Issuance
+            <span class="label-sub">CA signs &amp; returns</span>
+          </div>
+          <div id="label-5" class="label">
+            Deployment
+            <span class="label-sub">Installed on server</span>
+          </div>
+          <div id="label-6" class="label">
+            Active Use
+            <span class="label-sub">TLS handshakes</span>
+          </div>
+          <div id="label-7" class="label">
+            Renewal
+            <span class="label-sub">Loop before expiry</span>
+          </div>
+
+          <div id="revocation" class="revocation">
+            <div class="revocation-title">REVOCATION</div>
+            <div class="revocation-sub">CRL / OCSP on compromise</div>
+          </div>
+        </div>
+
+        <div id="outro" class="clip outro" data-start="34.5" data-duration="13" data-track-index="4">
+          <div class="outro-title">From keypair to renewal — visualized.</div>
+          <div class="outro-sub">astgl.substack.com</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // Title block entrance (offset from t=0)
+      tl.from("#title", { y: -40, opacity: 0, scale: 0.94, duration: 0.9, ease: "power3.out" }, 0.3);
+      tl.from("#subtitle", { y: -20, opacity: 0, duration: 0.7, ease: "power2.out" }, 0.7);
+
+      // Diagram frame in — ring + hub
+      tl.from("#ring", { scale: 0.5, opacity: 0, duration: 1.1, ease: "expo.out" }, 2.0);
+      tl.from("#hub", { scale: 0.2, opacity: 0, duration: 0.9, ease: "back.out(1.7)" }, 2.4);
+
+      // 7 phase nodes + labels — paced to narration (~3.5s per phase). Audio has 500ms silence
+      // prefix, so all phase cues are shifted +0.5s from the un-padded version.
+      tl.from("#node-1", { scale: 0, opacity: 0, duration: 0.5, ease: "back.out(2)" }, 4.0);
+      tl.from("#label-1", { opacity: 0, duration: 0.6, ease: "power2.out" }, 4.3);
+
+      tl.from("#node-2", { scale: 0, opacity: 0, duration: 0.5, ease: "back.out(2)" }, 7.5);
+      tl.from("#label-2", { opacity: 0, duration: 0.6, ease: "power2.out" }, 7.8);
+
+      tl.from("#node-3", { scale: 0, opacity: 0, duration: 0.5, ease: "back.out(2)" }, 11.0);
+      tl.from("#label-3", { opacity: 0, duration: 0.6, ease: "power2.out" }, 11.3);
+
+      tl.from("#node-4", { scale: 0, opacity: 0, duration: 0.5, ease: "back.out(2)" }, 14.5);
+      tl.from("#label-4", { opacity: 0, duration: 0.6, ease: "power2.out" }, 14.8);
+
+      tl.from("#node-5", { scale: 0, opacity: 0, duration: 0.5, ease: "back.out(2)" }, 18.0);
+      tl.from("#label-5", { opacity: 0, duration: 0.6, ease: "power2.out" }, 18.3);
+
+      tl.from("#node-6", { scale: 0, opacity: 0, duration: 0.5, ease: "back.out(2)" }, 21.5);
+      tl.from("#label-6", { opacity: 0, duration: 0.6, ease: "power2.out" }, 21.8);
+
+      tl.from("#node-7", { scale: 0, opacity: 0, duration: 0.5, ease: "back.out(2)" }, 25.0);
+      tl.from("#label-7", { opacity: 0, duration: 0.6, ease: "power2.out" }, 25.3);
+
+      // Hub pulse to emphasize cycle complete
+      tl.to("#hub", { scale: 1.12, duration: 0.4, ease: "power2.out" }, 28.0);
+      tl.to("#hub", { scale: 1.0, duration: 0.6, ease: "power2.inOut" }, 28.4);
+
+      // Revocation appears — paced to "And when something goes wrong..." (~29.5s)
+      tl.from("#revocation", { opacity: 0, scale: 0.85, duration: 0.7, ease: "power3.out" }, 29.5);
+
+      // Outro — paced to "From keypair to renewal..." (~34.5s), holds through CTA
+      tl.from("#outro", { y: 40, opacity: 0, duration: 0.9, ease: "power3.out" }, 34.5);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

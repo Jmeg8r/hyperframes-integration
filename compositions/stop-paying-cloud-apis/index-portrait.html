@@ -1,0 +1,654 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1080, height=1920" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html, body {
+        margin: 0;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: radial-gradient(ellipse at center, #1e3a5f 0%, #14283F 65%, #050b14 100%);
+        font-family: "Inter", sans-serif;
+        color: #FFFFFF;
+      }
+
+      .stage { position: relative; width: 100%; height: 100%; }
+
+      /* Persistent brand at top */
+      .brand {
+        position: absolute;
+        top: 60px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 26px;
+        font-weight: 500;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: #C8DCFA;
+      }
+      .brand-accent {
+        display: inline-block;
+        width: 44px;
+        height: 3px;
+        background: #e9724c;
+        margin-right: 16px;
+        vertical-align: middle;
+      }
+
+      /* CTA url bottom-pinned */
+      .footer {
+        position: absolute;
+        bottom: 60px;
+        left: 0;
+        right: 0;
+        text-align: center;
+      }
+      .footer-rule {
+        display: inline-block;
+        width: 80px;
+        height: 3px;
+        background: #e9724c;
+        margin-bottom: 18px;
+        border-radius: 2px;
+      }
+      .footer-url {
+        font-size: 32px;
+        font-weight: 600;
+        color: #1abc9c;
+        letter-spacing: 1px;
+        font-family: monospace;
+      }
+
+      /* ----- SCENE 1 — title + cost ----- */
+      .scene-title {
+        position: absolute;
+        top: 240px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        padding: 0 40px;
+      }
+      .title-main {
+        font-size: 120px;
+        font-weight: 800;
+        letter-spacing: -3px;
+        line-height: 0.98;
+        color: #FFFFFF;
+      }
+      .title-accent {
+        color: #e9724c;
+        display: block;
+        margin-top: 12px;
+      }
+      .title-rule {
+        display: inline-block;
+        width: 200px;
+        height: 5px;
+        background: #e9724c;
+        margin: 36px auto 0;
+        border-radius: 3px;
+      }
+      .cost-row {
+        position: absolute;
+        top: 880px;
+        left: 0;
+        right: 0;
+        text-align: center;
+      }
+      .cost-amount {
+        font-size: 240px;
+        font-weight: 800;
+        color: #e9724c;
+        letter-spacing: -8px;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+        text-shadow: 0 10px 50px rgba(233, 114, 76, 0.4);
+      }
+      .cost-label {
+        font-size: 40px;
+        font-weight: 500;
+        color: #C8DCFA;
+        margin-top: 24px;
+        letter-spacing: 8px;
+        text-transform: uppercase;
+      }
+
+      /* ----- SCENE 2 — Mac Studio + 256GB ----- */
+      .pivot {
+        position: absolute;
+        top: 240px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        padding: 0 40px;
+      }
+      .pivot-headline {
+        font-size: 96px;
+        font-weight: 700;
+        letter-spacing: -2px;
+        color: #FFFFFF;
+        line-height: 1.05;
+      }
+      .pivot-headline em { color: #1abc9c; font-style: normal; }
+      .mac-studio {
+        position: absolute;
+        top: 600px;
+        left: 50%;
+        margin-left: -210px;
+        width: 420px;
+        height: 420px;
+        background: linear-gradient(180deg, #2a4a72 0%, #1e3a5f 100%);
+        border-radius: 36px;
+        box-shadow:
+          0 30px 80px rgba(0, 0, 0, 0.5),
+          inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .mac-glow {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        background: radial-gradient(circle, #1abc9c 0%, rgba(26, 188, 156, 0) 70%);
+      }
+      .mac-label {
+        font-size: 36px;
+        font-weight: 600;
+        color: #FFFFFF;
+        margin-top: 22px;
+        letter-spacing: 1px;
+      }
+      .mem-callout {
+        position: absolute;
+        top: 1140px;
+        left: 0;
+        right: 0;
+        text-align: center;
+      }
+      .mem-big {
+        font-size: 160px;
+        font-weight: 800;
+        color: #1abc9c;
+        letter-spacing: -5px;
+        line-height: 1;
+        font-variant-numeric: tabular-nums;
+      }
+      .mem-big-sub {
+        font-size: 36px;
+        color: #C8DCFA;
+        letter-spacing: 6px;
+        text-transform: uppercase;
+        margin-top: 16px;
+      }
+
+      /* ----- SCENE 3 — memory bar (stacked vertically for portrait) ----- */
+      .mem-stack {
+        position: absolute;
+        top: 240px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        padding: 0 40px;
+      }
+      .mem-stack-title {
+        font-size: 78px;
+        font-weight: 700;
+        color: #FFFFFF;
+        letter-spacing: -1.5px;
+        line-height: 1.05;
+      }
+      .mem-stack-sub {
+        font-size: 30px;
+        color: #C8DCFA;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        margin-top: 18px;
+      }
+      .bar-wrap {
+        position: absolute;
+        top: 600px;
+        left: 90px;
+        right: 90px;
+        height: 760px;
+      }
+      .bar-track {
+        position: absolute;
+        inset: 0;
+        background: rgba(20, 40, 63, 0.6);
+        border: 2px solid rgba(200, 220, 250, 0.18);
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: inset 0 4px 24px rgba(0, 0, 0, 0.45);
+      }
+      /* Vertical bar: segments stack top→bottom (top = used), free zone at bottom.
+         Total 256 GB; used 107 GB = 41.8% of bar height (top portion). */
+      .bar-seg {
+        position: absolute;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        font-weight: 700;
+        color: #FFFFFF;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid rgba(20, 40, 63, 0.55);
+      }
+      #seg-1 { top: 0%;     height: 6.5%; background: linear-gradient(90deg, #1abc9c 0%, #149b80 100%); }
+      #seg-2 { top: 6.5%;   height: 9.5%; background: linear-gradient(90deg, #20c9a8 0%, #18a386 100%); }
+      #seg-3 { top: 16%;    height: 8%;   background: linear-gradient(90deg, #26d4b3 0%, #1cae93 100%); }
+      #seg-4 { top: 24%;    height: 16%;  background: linear-gradient(90deg, #2cdfbd 0%, #20b89e 100%); }
+      #seg-5 { top: 40%;    height: 1.8%; background: linear-gradient(90deg, #34e6c5 0%, #24c3a8 100%); }
+      .free-zone {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 41.8%;
+        bottom: 0;
+        background: repeating-linear-gradient(135deg,
+          rgba(200, 220, 250, 0.05) 0px,
+          rgba(200, 220, 250, 0.05) 16px,
+          rgba(200, 220, 250, 0.10) 16px,
+          rgba(200, 220, 250, 0.10) 32px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 44px;
+        font-weight: 700;
+        color: #C8DCFA;
+        letter-spacing: 3px;
+      }
+      .bar-stats {
+        position: absolute;
+        top: 1430px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 36px;
+        color: #FFFFFF;
+        letter-spacing: 1px;
+      }
+      .bar-stats strong { color: #1abc9c; font-weight: 800; }
+      .bar-stats-sub {
+        display: block;
+        font-size: 28px;
+        color: #C8DCFA;
+        margin-top: 14px;
+        letter-spacing: 1px;
+      }
+
+      /* ----- SCENE 4 — code block ----- */
+      .code-scene {
+        position: absolute;
+        top: 280px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        padding: 0 40px;
+      }
+      .code-headline {
+        font-size: 78px;
+        font-weight: 700;
+        letter-spacing: -1.5px;
+        color: #FFFFFF;
+        line-height: 1.05;
+      }
+      .code-sub {
+        font-size: 32px;
+        font-weight: 400;
+        color: #C8DCFA;
+        margin-top: 22px;
+        letter-spacing: 1px;
+      }
+      .code-block {
+        position: absolute;
+        top: 680px;
+        left: 50%;
+        margin-left: -460px;
+        width: 920px;
+        padding: 60px 50px;
+        background: #0a1626;
+        border: 2px solid rgba(233, 114, 76, 0.4);
+        border-radius: 22px;
+        box-shadow:
+          0 30px 80px rgba(0, 0, 0, 0.55),
+          0 0 0 1px rgba(255, 255, 255, 0.04);
+        font-family: monospace;
+      }
+      .code-line {
+        font-size: 36px;
+        line-height: 1.5;
+        text-align: left;
+        color: #FFFFFF;
+        word-break: break-all;
+      }
+      .code-prompt { color: #1abc9c; }
+      .code-cmd { color: #C8DCFA; display: block; margin-bottom: 8px; }
+      .code-eq { color: #FFFFFF; }
+      .code-val { color: #e9724c; font-weight: 600; word-break: break-all; }
+      .code-comment {
+        display: block;
+        font-size: 26px;
+        color: rgba(200, 220, 250, 0.55);
+        margin-top: 28px;
+        font-family: "Inter", sans-serif;
+        font-style: italic;
+        line-height: 1.4;
+      }
+      .code-payoff {
+        position: absolute;
+        top: 1300px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 44px;
+        color: #C8DCFA;
+        letter-spacing: 1px;
+        padding: 0 40px;
+        line-height: 1.2;
+      }
+      .code-payoff strong { color: #1abc9c; font-weight: 800; }
+
+      /* ----- SCENE 5 — break-even chart ----- */
+      .be-scene {
+        position: absolute;
+        top: 240px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        padding: 0 40px;
+      }
+      .be-headline {
+        font-size: 84px;
+        font-weight: 700;
+        color: #FFFFFF;
+        letter-spacing: -1.5px;
+        line-height: 1.05;
+      }
+      .be-sub {
+        font-size: 32px;
+        color: #C8DCFA;
+        margin-top: 20px;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+      }
+      .chart {
+        position: absolute;
+        top: 680px;
+        left: 60px;
+        right: 60px;
+        height: 700px;
+      }
+      .chart svg { width: 100%; height: 100%; display: block; }
+      .be-marker {
+        position: absolute;
+        top: 1450px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 38px;
+        color: #C8DCFA;
+        letter-spacing: 2px;
+        padding: 0 40px;
+        line-height: 1.3;
+      }
+      .be-marker strong { color: #1abc9c; }
+
+      /* ----- SCENE 6 — outro ----- */
+      .outro {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0 40px;
+      }
+      .outro-eyebrow {
+        font-size: 32px;
+        color: #C8DCFA;
+        letter-spacing: 8px;
+        text-transform: uppercase;
+        margin-bottom: 36px;
+      }
+      .outro-title {
+        font-size: 140px;
+        font-weight: 800;
+        color: #FFFFFF;
+        letter-spacing: -3px;
+        text-align: center;
+        line-height: 1.0;
+      }
+      .outro-title em { color: #e9724c; font-style: normal; }
+      .outro-rule {
+        width: 200px;
+        height: 5px;
+        background: #e9724c;
+        margin: 50px 0 44px;
+        border-radius: 3px;
+      }
+      .outro-url {
+        font-size: 56px;
+        font-weight: 600;
+        color: #1abc9c;
+        letter-spacing: 1px;
+        font-family: monospace;
+      }
+      .outro-cta {
+        font-size: 32px;
+        color: #C8DCFA;
+        margin-top: 36px;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        text-align: center;
+        line-height: 1.4;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="38"
+      data-width="1080"
+      data-height="1920"
+    >
+      <audio id="narration" class="clip" data-start="0" data-duration="33.5" data-track-index="9" src="narration.wav" data-volume="1.0"></audio>
+
+      <div class="stage">
+        <div id="brand" class="clip brand" data-start="0" data-duration="38" data-track-index="1">
+          <span class="brand-accent"></span>As The Geek Learns
+        </div>
+
+        <!-- SCENE 1 -->
+        <div id="scene-title" class="clip scene-title" data-start="0" data-duration="6.5" data-track-index="2">
+          <div class="title-main">
+            Stop Paying for
+            <span class="title-accent">Cloud APIs</span>
+          </div>
+          <span class="title-rule"></span>
+        </div>
+        <div id="cost-row" class="clip cost-row" data-start="1.6" data-duration="4.9" data-track-index="3">
+          <div class="cost-amount">$<span id="cost-num">0</span>/mo</div>
+          <div class="cost-label">Forever.</div>
+        </div>
+
+        <!-- SCENE 2 -->
+        <div id="pivot" class="clip pivot" data-start="6.5" data-duration="6" data-track-index="4">
+          <div class="pivot-headline">One <em>Mac Studio</em>.</div>
+        </div>
+        <div id="mac-studio" class="clip mac-studio" data-start="7.0" data-duration="5.5" data-track-index="5">
+          <div class="mac-glow"></div>
+          <div class="mac-label">Mac Studio</div>
+        </div>
+        <div id="mem-callout" class="clip mem-callout" data-start="8.6" data-duration="3.9" data-track-index="6">
+          <div class="mem-big">256 <span style="font-size: 0.5em;">GB</span></div>
+          <div class="mem-big-sub">Unified Memory</div>
+        </div>
+
+        <!-- SCENE 3 -->
+        <div id="mem-stack" class="clip mem-stack" data-start="12.5" data-duration="7" data-track-index="7">
+          <div class="mem-stack-title">Five models.<br/>Running at once.</div>
+          <div class="mem-stack-sub">Local Inference Stack</div>
+        </div>
+        <div id="bar-wrap" class="clip bar-wrap" data-start="13.0" data-duration="6.5" data-track-index="8">
+          <div class="bar-track">
+            <div id="seg-1" class="bar-seg">qwen3:8b</div>
+            <div id="seg-2" class="bar-seg">qwen3:32b-fast</div>
+            <div id="seg-3" class="bar-seg">qwen2.5-coder</div>
+            <div id="seg-4" class="bar-seg">deepseek-r1:70b</div>
+            <div id="seg-5" class="bar-seg"></div>
+            <div id="free-zone" class="free-zone">149 GB FREE</div>
+          </div>
+        </div>
+        <div id="bar-stats" class="clip bar-stats" data-start="14.4" data-duration="5.1" data-track-index="10">
+          <strong>107 GB</strong> used &nbsp;&middot;&nbsp; <strong>149 GB</strong> free
+          <span class="bar-stats-sub">All five models concurrent</span>
+        </div>
+
+        <!-- SCENE 4 -->
+        <div id="code-scene" class="clip code-scene" data-start="19.5" data-duration="6" data-track-index="11">
+          <div class="code-headline">One environment<br/>variable.</div>
+          <div class="code-sub">Your existing SDK still works.</div>
+        </div>
+        <div id="code-block" class="clip code-block" data-start="20.1" data-duration="5.4" data-track-index="12">
+          <div class="code-line">
+            <span class="code-prompt">$</span>
+            <span class="code-cmd">&nbsp;export OPENAI_BASE_URL<span class="code-eq">=</span></span>
+            <span class="code-val">http://localhost:11434/v1</span>
+          </div>
+          <span class="code-comment"># Point at your Mac. Same OpenAI SDK. Zero code changes.</span>
+        </div>
+        <div id="code-payoff" class="clip code-payoff" data-start="22.0" data-duration="3.5" data-track-index="13">
+          From cloud to local in <strong>one line</strong>.
+        </div>
+
+        <!-- SCENE 5 -->
+        <div id="be-scene" class="clip be-scene" data-start="25.5" data-duration="6" data-track-index="14">
+          <div class="be-headline">Break even in<br/>~12 months.</div>
+          <div class="be-sub">After that &middot; electricity</div>
+        </div>
+        <div id="chart" class="clip chart" data-start="26.0" data-duration="5.5" data-track-index="15">
+          <svg viewBox="0 0 960 700" preserveAspectRatio="none">
+            <line x1="80"  y1="600" x2="900" y2="600" stroke="rgba(200,220,250,0.18)" stroke-width="2"/>
+            <line x1="80"  y1="60"  x2="80"  y2="600" stroke="rgba(200,220,250,0.18)" stroke-width="2"/>
+            <text x="80"  y="650" fill="#C8DCFA" font-size="28" font-family="Inter" text-anchor="middle">Month 0</text>
+            <text x="490" y="650" fill="#1abc9c" font-size="28" font-family="Inter" font-weight="700" text-anchor="middle">Month 12</text>
+            <text x="900" y="650" fill="#C8DCFA" font-size="28" font-family="Inter" text-anchor="middle">Month 24</text>
+            <!-- cloud spend ramp -->
+            <path id="cloud-path" d="M 80,560 L 900,90" stroke="#e9724c" stroke-width="7" fill="none" stroke-linecap="round"/>
+            <text x="870" y="60" fill="#e9724c" font-size="30" font-family="Inter" font-weight="700" text-anchor="end">Cloud spend</text>
+            <!-- mac studio: capex then flat -->
+            <path id="local-path" d="M 80,200 L 200,200 L 900,260" stroke="#1abc9c" stroke-width="7" fill="none" stroke-linecap="round"/>
+            <text x="870" y="300" fill="#1abc9c" font-size="30" font-family="Inter" font-weight="700" text-anchor="end">Mac Studio</text>
+            <!-- crossover marker -->
+            <circle id="crossover" cx="490" cy="245" r="16" fill="#FFFFFF" stroke="#1abc9c" stroke-width="5"/>
+            <line x1="490" y1="245" x2="490" y2="600" stroke="rgba(26,188,156,0.5)" stroke-width="2" stroke-dasharray="8 8"/>
+          </svg>
+        </div>
+        <div id="be-marker" class="clip be-marker" data-start="27.5" data-duration="4" data-track-index="16">
+          Crossover at <strong>Month 12</strong><br/>Pure savings after
+        </div>
+
+        <!-- SCENE 6 -->
+        <div id="outro" class="clip outro" data-start="31.5" data-duration="6.5" data-track-index="17">
+          <div class="outro-eyebrow">Read the full guide</div>
+          <div class="outro-title">As<br/><em>The Geek</em><br/>Learns</div>
+          <div class="outro-rule"></div>
+          <div class="outro-url">astgl.substack.com</div>
+          <div class="outro-cta">Stop Paying for Cloud APIs<br/>Full Walkthrough</div>
+        </div>
+
+        <!-- Footer pinned bottom (not in outro scene since outro fills screen) -->
+        <div id="footer-bar" class="clip footer" data-start="0" data-duration="31.5" data-track-index="0">
+          <span class="footer-rule"></span>
+          <div class="footer-url">astgl.substack.com</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // SCENE 1
+      tl.from("#scene-title", { y: -30, opacity: 0, duration: 0.9, ease: "power3.out" }, 0.2);
+      tl.from("#cost-row", { y: 30, opacity: 0, duration: 0.7, ease: "power2.out" }, 1.6);
+      tl.fromTo("#cost-num",
+        { textContent: 0 },
+        {
+          textContent: 500,
+          duration: 2.4,
+          ease: "power1.out",
+          snap: { textContent: 1 },
+          onUpdate: function () {
+            const el = document.getElementById("cost-num");
+            if (el) el.textContent = Math.round(parseFloat(el.textContent || "0"));
+          }
+        },
+        1.9
+      );
+      tl.to("#cost-row", { scale: 1.04, duration: 0.35, yoyo: true, repeat: 1, ease: "power2.inOut" }, 4.5);
+      tl.to(["#scene-title", "#cost-row"], { opacity: 0, duration: 0.5, ease: "power2.in" }, 6.0);
+      tl.set(["#scene-title", "#cost-row"], { opacity: 0 }, 6.5);
+
+      // SCENE 2
+      tl.from("#pivot", { y: -20, opacity: 0, duration: 0.7, ease: "power3.out" }, 6.6);
+      tl.from("#mac-studio", { scale: 0.6, opacity: 0, duration: 0.9, ease: "back.out(1.6)" }, 7.0);
+      tl.to("#mac-glow", { scale: 1.3, opacity: 0.7, duration: 1.4, yoyo: true, repeat: 1, ease: "sine.inOut" }, 7.8);
+      tl.from("#mem-callout", { y: 30, opacity: 0, duration: 0.8, ease: "power3.out" }, 8.6);
+      tl.to(["#pivot", "#mac-studio", "#mem-callout"], { opacity: 0, duration: 0.5, ease: "power2.in" }, 12.0);
+      tl.set(["#pivot", "#mac-studio", "#mem-callout"], { opacity: 0 }, 12.5);
+
+      // SCENE 3
+      tl.from("#mem-stack", { y: -20, opacity: 0, duration: 0.7, ease: "power3.out" }, 12.6);
+      tl.from("#bar-wrap", { opacity: 0, scaleX: 0.6, transformOrigin: "center center", duration: 0.7, ease: "power3.out" }, 13.0);
+      tl.from("#seg-1", { scaleY: 0, transformOrigin: "center top", opacity: 0, duration: 0.35, ease: "power2.out" }, 13.4);
+      tl.from("#seg-2", { scaleY: 0, transformOrigin: "center top", opacity: 0, duration: 0.35, ease: "power2.out" }, 13.7);
+      tl.from("#seg-3", { scaleY: 0, transformOrigin: "center top", opacity: 0, duration: 0.35, ease: "power2.out" }, 14.0);
+      tl.from("#seg-4", { scaleY: 0, transformOrigin: "center top", opacity: 0, duration: 0.4,  ease: "power2.out" }, 14.3);
+      tl.from("#seg-5", { scaleY: 0, transformOrigin: "center top", opacity: 0, duration: 0.3,  ease: "power2.out" }, 14.7);
+      tl.from("#free-zone", { opacity: 0, duration: 0.6, ease: "power2.out" }, 15.0);
+      tl.from("#bar-stats", { y: 16, opacity: 0, duration: 0.6, ease: "power2.out" }, 15.5);
+      tl.to(["#mem-stack", "#bar-wrap", "#bar-stats"], { opacity: 0, duration: 0.5, ease: "power2.in" }, 19.0);
+      tl.set(["#mem-stack", "#bar-wrap", "#bar-stats"], { opacity: 0 }, 19.5);
+
+      // SCENE 4
+      tl.from("#code-scene", { y: -20, opacity: 0, duration: 0.7, ease: "power3.out" }, 19.6);
+      tl.from("#code-block", { y: 40, opacity: 0, scale: 0.96, duration: 0.9, ease: "power3.out" }, 20.1);
+      tl.to("#code-block", { boxShadow: "0 30px 80px rgba(0,0,0,0.55), 0 0 60px rgba(233,114,76,0.35)", duration: 0.5, ease: "power2.out" }, 21.0);
+      tl.from("#code-payoff", { y: 20, opacity: 0, duration: 0.7, ease: "power3.out" }, 22.0);
+      tl.to(["#code-scene", "#code-block", "#code-payoff"], { opacity: 0, duration: 0.5, ease: "power2.in" }, 25.0);
+      tl.set(["#code-scene", "#code-block", "#code-payoff"], { opacity: 0 }, 25.5);
+
+      // SCENE 5
+      tl.from("#be-scene", { y: -20, opacity: 0, duration: 0.7, ease: "power3.out" }, 25.6);
+      tl.from("#chart", { opacity: 0, duration: 0.5, ease: "power2.out" }, 26.0);
+      tl.from("#cloud-path", { drawSVG: "0%", duration: 1.3, ease: "power2.out" }, 26.2);
+      tl.from("#local-path", { drawSVG: "0%", duration: 1.3, ease: "power2.out" }, 26.6);
+      tl.from("#crossover", { scale: 0, transformOrigin: "490px 245px", opacity: 0, duration: 0.5, ease: "back.out(2)" }, 27.4);
+      tl.from("#be-marker", { y: 20, opacity: 0, duration: 0.7, ease: "power3.out" }, 27.5);
+      tl.to(["#be-scene", "#chart", "#be-marker"], { opacity: 0, duration: 0.5, ease: "power2.in" }, 31.0);
+      tl.set(["#be-scene", "#chart", "#be-marker"], { opacity: 0 }, 31.5);
+
+      // SCENE 6
+      tl.from("#outro", { y: 40, opacity: 0, duration: 0.9, ease: "power3.out" }, 31.6);
+      tl.from(".outro-rule", { scaleX: 0, transformOrigin: "center center", duration: 0.6, ease: "power2.out" }, 32.4);
+      tl.from(".outro-url", { y: 20, opacity: 0, duration: 0.7, ease: "power3.out" }, 32.6);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

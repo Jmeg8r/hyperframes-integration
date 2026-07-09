@@ -1,0 +1,21 @@
+PKI. The certificate lifecycle, in seven steps.
+
+One: key generation. The entity creates a keypair.
+
+Two: CSR submission. The request is sent to the certificate authority.
+
+Three: validation. The CA verifies the requesting identity.
+
+Four: issuance. The CA signs and returns the certificate.
+
+Five: deployment. The cert is installed on the server.
+
+Six: active use. Every TLS handshake relies on this.
+
+Seven: renewal. Before expiry, the loop begins again.
+
+And when something goes wrong, revocation. CRLs and OCSP cut compromised certs from the trust chain.
+
+From keypair to renewal.
+
+Another walkthrough from As The Geek Learns. Subscribe at astgl dot substack dot com.
