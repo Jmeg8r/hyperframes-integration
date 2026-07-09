@@ -21,10 +21,14 @@ standalone pipeline. Locked Tier 1 order (no skipping):
 Full plan context: auto-memory `pilot-plan.md`. Every friction point here is
 potential ASTGL article material — flag `[ASTGL CONTENT]` liberally.
 
-**This directory is NOT a git repository** (as of 2026-07). The Ironclad
-branch/PR workflow cannot run here yet. Do not fabricate git operations. If a
-change is substantial enough that you'd normally branch, say so and offer
-`git init` once — James's article implies a public GitHub repo is intended.
+**Git:** initialized 2026-07-08, branch `main`, no remote yet. The Ironclad
+Workflow applies: never commit directly to main once a remote with branch
+protection exists — until then, still branch for anything non-trivial.
+Ignored by design: rendered MP4s (reproduce via `npm run render`) and vendor
+skills in `.agents/skills/` (reinstall via `npx skills add
+heygen-com/hyperframes`; `skills-lock.json` is tracked and pins them).
+Creating the GitHub remote (`gh repo create`) and pushing is James's call —
+the ASTGL article links to `github.com/jmcruce/hyperframes-integration`.
 
 ## Layout
 
