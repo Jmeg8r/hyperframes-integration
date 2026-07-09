@@ -170,6 +170,6 @@ For now though: two MP4s, half a day of work, three lint catches that taught me 
 
 ---
 
-*HyperFrames is Apache 2.0 and lives at [github.com/heygen-com/hyperframes](https://github.com/heygen-com/hyperframes). The composition source for this PKI diagram is in [my hyperframes-integration repo](https://github.com/jmcruce/hyperframes-integration) — clone it, change the labels, render your own diagram.*
+*HyperFrames is Apache 2.0 and lives at [github.com/heygen-com/hyperframes](https://github.com/heygen-com/hyperframes). The composition source for this PKI diagram is in [my hyperframes-integration repo](https://github.com/Jmeg8r/hyperframes-integration) — clone it, change the labels, render your own diagram.*
 
 *Subscribe to [As The Geek Learns](https://astgl.substack.com) for more practical write-ups of AI-driven development from the inside.*
